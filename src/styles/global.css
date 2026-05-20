@@ -1,0 +1,1285 @@
+/* ============================================================
+   SHOPWALK — GLOBAL STYLESHEET
+   src/styles/global.css
+
+   TABLE OF CONTENTS
+   ============================================================
+   1.  Tailwind Directives
+   2.  CSS Custom Properties (Brand Tokens)
+   3.  Base / Reset
+   4.  Typography
+   5.  Layout — AppShell
+   6.  Layout — Header
+   7.  Layout — NavBar (Bottom Mobile Nav)
+   8.  Layout — Sidebar (Admin)
+   9.  Pages — Dashboard
+   10. Pages — ShopWalk / Audit Session
+   11. Pages — Orders
+   12. Pages — Reports
+   13. Pages — Admin
+   14. Pages — Setup Wizard
+   15. Pages — Auth (Login, Forgot Password)
+   16. Components — Cards
+   17. Components — Buttons
+   18. Components — Forms & Inputs
+   19. Components — Badges & Tags
+   20. Components — Tables
+   21. Components — Modals & Sheets
+   22. Components — Loading States
+   23. Components — Empty States
+   24. Utilities
+   25. PWA / Mobile Overrides
+   26. Dark Mode (reserved for future use)
+   ============================================================ */
+
+
+/* ============================================================
+   1. TAILWIND DIRECTIVES
+   These three lines load Tailwind's base styles, component
+   classes, and utility classes into the project.
+   Without these, no Tailwind classes will work.
+   ============================================================ */
+@import "tailwindcss";
+
+
+/* ============================================================
+   2. CSS CUSTOM PROPERTIES (BRAND TOKENS)
+   
+   These are CSS variables — reusable values that drive the
+   entire app's look and feel from one place.
+
+   :root means these variables are available everywhere in the app.
+
+   HOW WHITE-LABELING WORKS:
+   The Setup Wizard writes new values into .env
+   brand.ts reads those .env values
+   main.tsx injects them here at runtime by setting these variables
+   Every component that uses var(--color-primary) updates automatically
+
+   To change the entire app's color scheme, you only need to
+   change the values in .env — nothing else needs to touch.
+   ============================================================ */
+:root {
+  /* --- Primary Brand Color ---
+     Used for: headers, primary buttons, active nav items,
+     key UI elements that represent the main brand */
+  --color-primary: #0056A0;
+
+  /* --- Accent / Secondary Color ---
+     Used for: highlights, links, badges, hover states,
+     secondary actions that support the primary color */
+  --color-accent: #00ADEF;
+
+  /* --- Dark / Text Color ---
+     Used for: body text, icons, labels, anything that
+     needs to be readable on a light background */
+  --color-dark: #333333;
+
+  /* --- Background ---
+     Used for: main page background */
+  --color-background: #FFFFFF;
+
+  /* --- Muted ---
+     Used for: subtle section backgrounds, disabled states,
+     alternating table rows, card backgrounds */
+  --color-muted: #F4F4F5;
+
+  /* --- Border ---
+     Used for: dividers, input borders, card outlines */
+  --color-border: #E4E4E7;
+
+  /* --- Success / Warning / Danger ---
+     Used for: status indicators, alerts, validation feedback */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+
+  /* --- Typography ---
+     Font stack with Inter as primary, falling back to
+     system fonts if Inter hasn't loaded yet */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Spacing & Sizing ---
+     Consistent spacing units used across layout components */
+  --header-height: 60px;
+  --navbar-height: 64px;
+  --sidebar-width: 240px;
+
+  /* --- Border Radius ---
+     Controls how rounded corners are throughout the app */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* --- Shadows ---
+     Subtle elevation for cards, modals, dropdowns */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* --- Transitions ---
+     Consistent animation speed for interactive elements */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+
+/* ============================================================
+   3. BASE / RESET
+   
+   Sets foundational styles on raw HTML elements.
+   These override browser defaults so we start from
+   a consistent baseline across all devices.
+   ============================================================ */
+*,
+*::before,
+*::after {
+  /* border-box means padding and border are included in width/height
+     calculations — much more predictable than the browser default */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Prevents font size from scaling when device orientation changes */
+  -webkit-text-size-adjust: 100%;
+  /* Enables smooth scrolling for anchor links */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-dark);
+  /* Improves font rendering on Mac/iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevents horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+img,
+video {
+  /* Prevents images from overflowing their containers */
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  /* Removes default browser button styles so we can style from scratch */
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+/* ============================================================
+   4. TYPOGRAPHY
+   
+   Global text styles for headings, body text, labels.
+   We use these classes on elements throughout the app
+   to keep text sizing and weight consistent.
+   ============================================================ */
+
+/* Page-level headings */
+.text-heading-1 {
+  font-size: 1.75rem;   /* 28px */
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-dark);
+}
+
+.text-heading-2 {
+  font-size: 1.375rem;  /* 22px */
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-dark);
+}
+
+.text-heading-3 {
+  font-size: 1.125rem;  /* 18px */
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-dark);
+}
+
+/* Body text */
+.text-body {
+  font-size: 1rem;      /* 16px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-body-sm {
+  font-size: 0.875rem;  /* 14px */
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Labels and captions */
+.text-label {
+  font-size: 0.75rem;   /* 12px */
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-dark);
+  opacity: 0.6;
+}
+
+.text-caption {
+  font-size: 0.75rem;   /* 12px */
+  font-weight: 400;
+  color: var(--color-dark);
+  opacity: 0.5;
+}
+
+
+/* ============================================================
+   5. LAYOUT — APP SHELL
+   
+   AppShell is the outermost wrapper of the entire app.
+   It creates the structure that holds the Header,
+   main content area, and NavBar together.
+   ============================================================ */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  /* 100dvh = dynamic viewport height — accounts for mobile browser
+     chrome (address bar) shrinking/expanding as user scrolls */
+  min-height: 100dvh;
+  background-color: var(--color-background);
+}
+
+/* The scrollable content area between header and nav */
+.app-main {
+  flex: 1;
+  /* Padding bottom leaves room for the fixed bottom NavBar
+     so content isn't hidden behind it */
+  padding-bottom: var(--navbar-height);
+  padding-top: var(--header-height);
+  overflow-y: auto;
+}
+
+/* Inner content wrapper with consistent horizontal padding */
+.app-content {
+  width: 100%;
+  max-width: 768px;     /* Optimized for tablet */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+
+/* ============================================================
+   6. LAYOUT — HEADER
+   
+   Fixed top bar that shows the app name/logo and
+   contextual actions (back button, page title, etc.)
+   ============================================================ */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  /* z-index controls stacking order — header stays on top of content */
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-header__logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.app-header__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+/* ============================================================
+   7. LAYOUT — NAVBAR (BOTTOM MOBILE NAV)
+   
+   Fixed bottom navigation bar for technician-facing pages.
+   Bottom nav is the standard pattern for mobile apps —
+   it keeps primary navigation within thumb reach.
+   ============================================================ */
+.app-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  /* z-index keeps navbar above page content when scrolling */
+  z-index: 100;
+  /* Safe area inset handles the iPhone home indicator bar */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.app-navbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  /* Minimum 44px tap target — Apple HIG and Google Material
+     both recommend this as the minimum for touch targets */
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  color: var(--color-dark);
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.app-navbar__item--active {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.app-navbar__item:hover {
+  opacity: 0.8;
+}
+
+
+/* ============================================================
+   8. LAYOUT — SIDEBAR (ADMIN)
+   
+   Used only on admin pages (desktop/tablet).
+   Technician-facing pages use the bottom NavBar instead.
+   ============================================================ */
+.app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100dvh;
+  background-color: var(--color-dark);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  z-index: 200;
+  overflow-y: auto;
+}
+
+.app-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 2rem;
+}
+
+.app-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all var(--transition-fast);
+}
+
+.app-sidebar__item--active,
+.app-sidebar__item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+
+/* ============================================================
+   9. PAGES — DASHBOARD
+   Styles specific to the main dashboard page
+   ============================================================ */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.dashboard-stat {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-stat__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.dashboard-stat__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-dark);
+  opacity: 0.6;
+  margin-top: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+   10. PAGES — SHOPWALK / AUDIT SESSION
+   Styles for the core audit flow — the most used screen
+   in the app. Optimized for speed and large touch targets.
+   ============================================================ */
+
+.audit-category-nav {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  /* Hides scrollbar visually but keeps scroll functionality */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.audit-category-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.audit-category-pill {
+  flex-shrink: 0;
+  padding: 0.375rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-dark);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.audit-category-pill--active {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.audit-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: #FFFFFF;
+  gap: 1rem;
+}
+
+.audit-item-row__info {
+  flex: 1;
+  min-width: 0; /* Prevents text overflow in flex children */
+}
+
+.audit-item-row__name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  /* Truncates long product names with ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.audit-item-row__sku {
+  font-size: 0.75rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+  margin-top: 0.125rem;
+}
+
+.audit-count-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.audit-count-input__btn {
+  /* Large square tap targets for +/- buttons */
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  transition: background var(--transition-fast);
+}
+
+.audit-count-input__btn:hover {
+  background: var(--color-border);
+}
+
+.audit-count-input__value {
+  width: 48px;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.audit-progress-bar {
+  height: 4px;
+  background: var(--color-muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.audit-progress-bar__fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  /* CSS transition animates the width change smoothly */
+  transition: width var(--transition-base);
+}
+
+
+/* ============================================================
+   11. PAGES — ORDERS
+   Replenishment order list and detail views
+   ============================================================ */
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.order-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.order-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.order-card__id {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-dark);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-card__total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+
+/* ============================================================
+   12. PAGES — REPORTS
+   Report list, report detail, and download views
+   ============================================================ */
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.report-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.report-card__meta {
+  flex: 1;
+}
+
+.report-card__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.report-card__date {
+  font-size: 0.75rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+  margin-top: 0.25rem;
+}
+
+
+/* ============================================================
+   13. PAGES — ADMIN
+   Admin dashboard, product manager, user manager
+   ============================================================ */
+
+/* Admin layout shifts content right to account for sidebar */
+.admin-layout {
+  margin-left: var(--sidebar-width);
+  min-height: 100dvh;
+  padding: 2rem;
+}
+
+.admin-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   14. PAGES — SETUP WIZARD
+   Multi-step onboarding wizard for white-label setup
+   ============================================================ */
+
+.setup-container {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-muted);
+  padding: 1rem;
+}
+
+.setup-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 540px;
+  padding: 2.5rem;
+}
+
+.setup-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.setup-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  transition: background var(--transition-base);
+}
+
+.setup-step-dot--active {
+  background: var(--color-primary);
+  width: 24px; /* Active step is wider to indicate progress */
+}
+
+.setup-step-dot--complete {
+  background: var(--color-success);
+}
+
+
+/* ============================================================
+   15. PAGES — AUTH
+   Login and forgot password pages
+   ============================================================ */
+
+.auth-container {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  padding: 1rem;
+}
+
+.auth-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-logo__text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+
+/* ============================================================
+   16. COMPONENTS — CARDS
+   General-purpose card styles used across the app
+   ============================================================ */
+
+.card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card--padded {
+  padding: 1.25rem;
+}
+
+.card--interactive {
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  cursor: pointer;
+}
+
+.card--interactive:hover {
+  box-shadow: var(--shadow-md);
+  /* Subtle lift effect on hover */
+  transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   17. COMPONENTS — BUTTONS
+   Primary, secondary, ghost, and danger button styles
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  /* Minimum touch target size */
+  min-height: 44px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+  border: 2px solid transparent;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.btn--primary:hover {
+  /* filter: brightness() darkens or lightens the color by a percentage */
+  filter: brightness(0.9);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn--secondary:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-dark);
+  border-color: transparent;
+}
+
+.btn--ghost:hover {
+  background: var(--color-muted);
+}
+
+.btn--danger {
+  background: var(--color-danger);
+  color: #FFFFFF;
+  border-color: var(--color-danger);
+}
+
+.btn--danger:hover {
+  filter: brightness(0.9);
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   18. COMPONENTS — FORMS & INPUTS
+   Text inputs, selects, textareas, and form layout
+   ============================================================ */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-dark);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  color: var(--color-dark);
+  background: #FFFFFF;
+  /* Minimum height for touch targets */
+  min-height: 44px;
+  transition: border-color var(--transition-fast);
+  /* Removes default browser outline — we use border-color instead */
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+}
+
+.form-input--error {
+  border-color: var(--color-danger);
+}
+
+.form-error {
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  margin-top: 0.25rem;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+}
+
+
+/* ============================================================
+   19. COMPONENTS — BADGES & TAGS
+   Status indicators, category tags, count badges
+   ============================================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.badge--success {
+  background: #DCFCE7;
+  color: var(--color-success);
+}
+
+.badge--warning {
+  background: #FEF3C7;
+  color: var(--color-warning);
+}
+
+.badge--danger {
+  background: #FEE2E2;
+  color: var(--color-danger);
+}
+
+.badge--primary {
+  background: #DBEAFE;
+  color: var(--color-primary);
+}
+
+.badge--neutral {
+  background: var(--color-muted);
+  color: var(--color-dark);
+}
+
+
+/* ============================================================
+   20. COMPONENTS — TABLES
+   Data tables for product lists, audit history, reports
+   ============================================================ */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th {
+  background: var(--color-muted);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-dark);
+  opacity: 0.6;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-dark);
+  vertical-align: middle;
+}
+
+/* Last row has no bottom border */
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: var(--color-muted);
+}
+
+
+/* ============================================================
+   21. COMPONENTS — MODALS & SHEETS
+   Dialog overlays and bottom sheet panels
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* shorthand for top/right/bottom/left: 0 */
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 500;
+  /* Fade in animation */
+  animation: fadeIn var(--transition-fast) ease;
+}
+
+.modal-content {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Bottom sheet — slides up from the bottom on mobile */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  padding: 1.5rem;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  z-index: 500;
+  animation: slideUp var(--transition-base) ease;
+}
+
+/* Handle bar at top of bottom sheet */
+.bottom-sheet__handle {
+  width: 40px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  margin: 0 auto 1.25rem;
+}
+
+
+/* ============================================================
+   22. COMPONENTS — LOADING STATES
+   Spinners and skeleton loaders
+   ============================================================ */
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-border);
+  /* Only the top border has color — creates the spinning arc effect */
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  /* spin is defined in the @keyframes below */
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner--lg {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+/* Skeleton loader — the grey pulsing placeholder seen while data loads */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-muted) 25%,
+    var(--color-border) 50%,
+    var(--color-muted) 75%
+  );
+  /* background-size larger than element so the shimmer has room to move */
+  background-size: 200% 100%;
+  border-radius: var(--radius-md);
+  animation: shimmer 1.5s infinite;
+}
+
+
+/* ============================================================
+   23. COMPONENTS — EMPTY STATES
+   Shown when a list or section has no data yet
+   ============================================================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.empty-state__icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-dark);
+  opacity: 0.2;
+}
+
+.empty-state__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.empty-state__description {
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+  max-width: 280px;
+}
+
+
+/* ============================================================
+   24. UTILITIES
+   Single-purpose helper classes used anywhere in the app
+   ============================================================ */
+
+/* Visually hidden but still accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 1rem 0;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+/* ============================================================
+   25. PWA / MOBILE OVERRIDES
+   Mobile-specific fixes and PWA installation behavior
+   ============================================================ */
+
+/* Prevents iOS from auto-styling inputs */
+input,
+textarea,
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Prevents tap highlight flash on mobile browsers */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* PWA standalone mode — hides browser chrome when installed */
+@media (display-mode: standalone) {
+  .app-header {
+    /* Adds room for the iOS status bar when running as installed PWA */
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--header-height) + env(safe-area-inset-top));
+  }
+}
+
+/* Tablet breakpoint — slightly wider layout */
+@media (min-width: 640px) {
+  .app-content {
+    padding: 1.5rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+
+/* ============================================================
+   26. DARK MODE (RESERVED)
+   Not implemented yet — placeholder for future dark mode.
+   When ready, override CSS variables here and everything
+   that uses var() will update automatically.
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  /* :root {
+    --color-background: #0F172A;
+    --color-dark: #F1F5F9;
+    --color-muted: #1E293B;
+    --color-border: #334155;
+  } */
+}
+
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   Defined once here, referenced by name throughout the file
+   ============================================================ */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

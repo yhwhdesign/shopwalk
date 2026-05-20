@@ -35,6 +35,8 @@ VITE_SUPPORT_EMAIL=
 | 2026-05-19 | Removed all hardcoded company names | White-label requires zero brand assumptions in code |
 | 2026-05-19 | App renamed from shopwalk-pwa to shopwalk | Cleaner naming, PWA is an implementation detail not an identity |
 
+| 2026-05-19 | Set allowImportingTsExtensions to false in tsconfig.node.json | composite: true conflicts with noEmit: true, removing noEmit caused allowImportingTsExtensions to error |
+
 ---
 
 ## Build Phases
@@ -78,5 +80,3 @@ VITE_SUPPORT_EMAIL=
 - [ ] Service worker + offline mode
 - [ ] Install prompts
 - [ ] Mobile/tablet final optimization
-
-EOF
