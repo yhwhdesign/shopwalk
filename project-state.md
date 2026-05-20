@@ -80,3 +80,31 @@ VITE_SUPPORT_EMAIL=
 - [ ] Service worker + offline mode
 - [ ] Install prompts
 - [ ] Mobile/tablet final optimization
+
+
+### BELOW WILL BE DATES AND PAUSES, FOR LOGGING PROGRESS if we pause before completing a step above.
+
+ShopWalk — Session Checkpoint
+Date: 2026-05-19
+Completed Today:
+
+✅ Vite + React + TypeScript project scaffolded
+✅ Tailwind CSS v4 installed and configured
+✅ shadcn/ui initialized with Radix base
+✅ Full folder structure created
+✅ All placeholder files created
+✅ tsconfig.json and tsconfig.node.json conflicts resolved
+✅ global.css fully scaffolded with all 26 sections
+✅ brand.ts built with white-label token injection
+✅ constants.ts built
+✅ All type files built (product.ts, audit.ts, user.ts, index.ts)
+✅ main.tsx wired up with injectBrandTokens()
+✅ App boots clean with zero errors
+✅ Both main and dev branches pushed to GitHub
+
+Next Session Picks Up At:
+
+src/App.tsx — clean slate router setup
+src/components/layout/AppShell.tsx
+src/components/layout/Header.tsx
+src/components/layout/NavBar.tsx
